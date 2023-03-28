@@ -6,6 +6,8 @@
 /*
 Exercício 1 - Validação e formatação de número de telefone.
 
+commit - 12h
+
 Crie uma página PHP com as seguintes características:
 - 1. Receba informações por GET.
 - 2. Sempre devolva uma página HTML completa e bem formada (o teste sempre vai passar ela num validador).
