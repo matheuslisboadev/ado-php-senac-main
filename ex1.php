@@ -44,19 +44,15 @@ Dica:
 */
 ?>
 <?php
-// Verifica se o parâmetro telefone foi passado na query string
+
 if (!isset($_GET['telefone'])) {
     $telefoneValido = false;
 } else {
     $telefone = $_GET['telefone'];
-    // Remove todos os caracteres não numéricos
     $telefone = preg_replace("/[^0-9]/", "", $telefone);
-    // Verifica se o telefone tem 10 ou 11 dígitos
     if (strlen($telefone) == 10 || strlen($telefone) == 11) {
-        // Verifica se o DDD é válido
         $ddd = substr($telefone, 0, 2);
         if (in_array($ddd, array('11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '63', '64', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94', '95', '96', '97', '98', '99'))) {
-            // Verifica se o número é um celular ou telefone fixo
             if (strlen($telefone) == 11) {
                 $prefixo = substr($telefone, 2, 2);
                 if ($prefixo != '90' && substr($telefone, 2, 1) == '9') {
@@ -80,7 +76,6 @@ if (!isset($_GET['telefone'])) {
     }
 }
 
-// Gera a página HTML completa, incluindo cabeçalho e corpo
 echo '<!DOCTYPE html>';
 echo '<html>';
 echo '<head>';
@@ -89,7 +84,6 @@ echo '<title>Validação de telefone</title>';
 echo '</head>';
 echo '<body>';
 
-// Coloca o telefone na página, de acordo com o resultado da validação
 if ($telefoneValido) {
     if (strlen($telefone) == 11) {
         echo '<p>(' . substr($telefone, 0, 2) . ') ' . substr($telefone, 2, 5) . '-' . substr($telefone, 7) . '</p>';
