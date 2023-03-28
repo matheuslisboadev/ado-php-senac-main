@@ -44,53 +44,61 @@ Dica:
 */
 ?>
 <?php
-$telefone = isset($_GET['telefone']) ? $_GET['telefone'] : null;
-?>
-<?php
-function validarPaginaTelefone($telefone) {
-  // Verifica se o número de telefone tem 10 ou 11 dígitos e é composto somente por caracteres numéricos
-  if (preg_match('/^[0-9]{10,11}$/', $telefone)) {
-    $ddd = substr($telefone, 0, 2);
-    $numero = substr($telefone, 2);
-    // Verifica se o DDD é válido
-    $dddsValidos = array('11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '63', '64', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94', '95', '96', '97', '98', '99');
-    if (in_array($ddd, $dddsValidos)) {
-      // Verifica se é um número de celular
-      if (strlen($numero) == 9 && substr($numero, 0, 1) == '9' && substr($numero, 1, 1) != '0') {
-        return true;
-      }
-      // Verifica se é um telefone fixo
-      elseif (strlen($numero) == 8 && preg_match('/^[2-8]/', $numero)) {
-        return true;
-      }
-      // Número inválido
-      else {
-        return false;
-      }
-    }
-    // DDD inválido
-    else {
-      return false;
-    }
-  }
-  // Número inválido
-  else {
-    return false;
-  }
-}
-?>
-
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>TESTE ADO</title>
-    </head>
-    <body>
-    <?php if ($telefone_formatado) {
-        echo "<p>" . $telefone_formatado . "</p>\n";
+// Verifica se o parâmetro telefone foi passado na query string
+if (!isset($_GET['telefone'])) {
+    $telefoneValido = false;
+} else {
+    $telefone = $_GET['telefone'];
+    // Remove todos os caracteres não numéricos
+    $telefone = preg_replace("/[^0-9]/", "", $telefone);
+    // Verifica se o telefone tem 10 ou 11 dígitos
+    if (strlen($telefone) == 10 || strlen($telefone) == 11) {
+        // Verifica se o DDD é válido
+        $ddd = substr($telefone, 0, 2);
+        if (in_array($ddd, array('11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '63', '64', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94', '95', '96', '97', '98', '99'))) {
+            // Verifica se o número é um celular ou telefone fixo
+            if (strlen($telefone) == 11) {
+                $prefixo = substr($telefone, 2, 2);
+                if ($prefixo != '90' && substr($telefone, 2, 1) == '9') {
+                    $telefoneValido = true;
+                } else {
+                    $telefoneValido = false;
+                }
+            } elseif (strlen($telefone) == 10) {
+                $prefixo = substr($telefone, 2, 1);
+                if ($prefixo >= '2' && $prefixo <= '8') {
+                    $telefoneValido = true;
+                } else {
+                    $telefoneValido = false;
+                }
+            }
+        } else {
+            $telefoneValido = false;
+        }
     } else {
-        echo "<p>Número inválido</p>\n";
+        $telefoneValido = false;
     }
-     ?>   
-    </body>
-</html>
+}
+
+// Gera a página HTML completa, incluindo cabeçalho e corpo
+echo '<!DOCTYPE html>';
+echo '<html>';
+echo '<head>';
+echo '<meta charset="UTF-8">';
+echo '<title>Validação de telefone</title>';
+echo '</head>';
+echo '<body>';
+
+// Coloca o telefone na página, de acordo com o resultado da validação
+if ($telefoneValido) {
+    if (strlen($telefone) == 11) {
+        echo '<p>(' . substr($telefone, 0, 2) . ') ' . substr($telefone, 2, 5) . '-' . substr($telefone, 7) . '</p>';
+    } else {
+        echo '<p>(' . substr($telefone, 0, 2) . ') ' . substr($telefone, 2, 4) . '-' . substr($telefone, 6) . '</p>';
+    }
+} else {
+    echo '<p>Número inválido</p>';
+}
+
+echo '</body>';
+?>
