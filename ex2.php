@@ -27,7 +27,47 @@ Dica:
 - Procure no material que o professor já deixou pronto.
 */
 ?>
+<?php
+
 <!DOCTYPE html>
-<html>
-    <!-- Coloque o que precisar aqui. -->
+<head>
+    <meta charset="UTF-8">
+    <title>ado - php</title>
+</head>
+<body>
+if (!isset($_POST['nome'], $_POST['sexo'], $_POST['data-nascimento'])) {
+    echo "<p>Errado</p>";
+    exit;
+}
+
+$nome = trim($_POST['nome']);
+
+if (empty($nome)) {
+    echo "<p>Errado</p>";
+    exit;
+}
+
+$sexo = $_POST['sexo'];
+if ($sexo !== 'M' && $sexo !== 'F') {
+    echo "<p>Errado</p>";
+    exit;
+}
+
+$data_nascimento = $_POST['data-nascimento'];
+if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_nascimento)) {
+    echo "<p>Errado</p>";
+    exit;
+
+}
+
+    if ($sexo === 'M') {
+        $genero = "um garoto";
+    } else {
+        $genero = "uma garota";
+    }
+
+
+echo "<p>$nome é $genero de $idade anos de idade.</p>"
+
+</body>
 </html>
