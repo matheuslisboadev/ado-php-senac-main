@@ -27,7 +27,7 @@ Dica:
 - Procure no material que o professor já deixou pronto.
 */
 ?>
-<?php
+
 
 <!DOCTYPE html>
 <head>
@@ -35,6 +35,7 @@ Dica:
     <title>ado - php</title>
 </head>
 <body>
+<?php
 if (!isset($_POST['nome'], $_POST['sexo'], $_POST['data-nascimento'])) {
     echo "<p>Errado</p>";
     exit;
@@ -68,6 +69,6 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_nascimento)) {
 
 
 echo "<p>$nome é $genero de $idade anos de idade.</p>"
-
+?>
 </body>
 </html>
