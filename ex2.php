@@ -7,6 +7,20 @@
     date_default_timezone_set("America/Sao_Paulo");
     $hoje = (new DateTimeImmutable("now"))->setTime(0, 0, 0, 0);
 
+	function dataValida($data) {
+        try {
+            $d = new DateTimeImmutable($data);
+            if ($data !== $d->format("Y-m-d")) return false;
+            if ((int) $d->format("Y") <= 0) return false;
+        } catch (Error $x) {
+            return false;
+        } catch (Exception $x) {
+            return false;
+        }
+        return true;
+    }
+	
+
 /*
 Exercício 2 - Formulário, parte 1.
 
@@ -27,48 +41,52 @@ Dica:
 - Procure no material que o professor já deixou pronto.
 */
 ?>
-
-
 <!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ado - php</title>
+	<meta charset="UTF-8">
+	<title>Verificação de dados</title>
 </head>
 <body>
 <?php
-if (!isset($_POST['nome'], $_POST['sexo'], $_POST['data-nascimento'])) {
-    echo "<p>Errado</p>";
-    exit;
-}
-
-$nome = trim($_POST['nome']);
-
-if (empty($nome)) {
-    echo "<p>Errado</p>";
-    exit;
-}
-
-$sexo = $_POST['sexo'];
-if ($sexo !== 'M' && $sexo !== 'F') {
-    echo "<p>Errado</p>";
-    exit;
-}
-
-$data_nascimento = $_POST['data-nascimento'];
-if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_nascimento)) {
-    echo "<p>Errado</p>";
-    exit;
-
-}
-
-    if ($sexo === 'M') {
-        $genero = "um garoto";
-    } else {
-        $genero = "uma garota";
-    }
-
-
-echo "<p>$nome é $genero de $idade anos de idade.</p>"
-?>
+	// Verifica se todos os campos foram enviados por POST
+	if (isset($_POST['nome']) && isset($_POST['sexo']) && isset($_POST['data-nascimento'])) {
+		$nome = trim($_POST['nome']); // remove espaços à direita e à esquerda do nome
+		$sexo = $_POST['sexo'];
+		$data_nascimento = $_POST['data-nascimento'];
+        $arraydataNascimento = str_split($data_nascimento,2);
+        if(strlen($nome < 1)){
+            echo "<p>Errado</p>";
+        } 
+        if($arraydataNascimento[4] == "00"){
+            echo "<p>Errado</p>";
+        }
+		if ($sexo == 'M' || $sexo == 'F') {
+			if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_nascimento)) {
+				$dataValida = dataValida($data_nascimento);
+				$data_nascimento_time = strtotime($data_nascimento);
+				if ($data_nascimento_time !== false && $dataValida !== false) {
+					$hoje_time = strtotime('today');
+					$idade = date_diff(date_create($data_nascimento), date_create('today'))->y; 
+					if ($data_nascimento_time <= $hoje_time && $data_nascimento_time >= strtotime('-120 years') && $idade >= 0) {
+						$genero = ($sexo == 'M') ? 'um garoto' : 'uma garota';
+						echo "<p>$nome é $genero de $idade anos de idade.</p>";
+					} 
+					else {
+						echo "<p>Errado</p>";
+					}
+				} else {
+					echo "<p>Errado</p>";
+				}
+			} else {
+				echo "<p>Errado</p>";
+			}
+		} else {
+			echo "<p>Errado</p>";
+		}
+	} else {
+		echo "<p>Errado</p>";
+	}
+	?>
 </body>
 </html>
